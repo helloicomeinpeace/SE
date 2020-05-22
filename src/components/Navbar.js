@@ -196,12 +196,12 @@ export default function PrimarySearchAppBar() {
           >
             <ProductConsumer>
               {value => {
-                  return <MenuIcon style={{color:'white'}} onClick={value.handleDrawerOpen} />;          
+                  return !value.isRider?(<MenuIcon style={{color:'white'}} onClick={value.handleDrawerOpen} />):null;          
               }}
             </ProductConsumer>
           </IconButton>
           <Typography className={classes.title} variant="h6" noWrap>
-            FYP-Bahria
+            GROCERY APP
           </Typography>
           {/*<div className={classes.search}>
             <div className={classes.searchIcon}>

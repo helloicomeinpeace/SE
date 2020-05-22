@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { ProductConsumer } from "../../../context";
 import { Link } from "react-router-dom";
 import { ButtonContainer } from "../../Button";
-
+import { Dropdown } from 'semantic-ui-react'
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
@@ -42,8 +42,12 @@ class AddProduct extends Component {
     pushProduct = () => {
 
       console.log(this.context.user.uid)
-
-      var catId = this.context.categories.filter(function(el){ return el.name === this.state.category }.bind(this))[0].id
+      try{      var catId = this.context.categories.filter(function(el){ return el.name === this.state.category }.bind(this))[0].id
+    }
+    catch(err)
+    {
+      alert("There is no category with the name: "+this.state.category+" in the database. Try again")
+    }
 
       fire.getFire()
           .database()
@@ -221,7 +225,7 @@ class AddProduct extends Component {
                   <Divider style={{marginTop:'5%', marginBottom:'5%'}}/>
                   
                   <TextField
-                      style={{width:'100%'}}
+                      style={{width:'100%', marginBottom:'2%'}}
                       id="standard-name"
                       label="Category"
                       // multiline

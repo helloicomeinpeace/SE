@@ -5,6 +5,8 @@ import { useHistory } from "react-router-dom";
 import fire from  '../src/components/fire';
 import CartItem from "./components/Cart/CartItem";
 import history from "./navigation/history"
+import ReactLoading from "react-loading";
+
 const ProductContext = React.createContext();
 
 // fb.database().ref('/')
@@ -31,6 +33,7 @@ class ProductProvider extends Component {
   
 
   state = {
+    done:null,
     products: [],
     productsDup: [],
     // productsLive: [],
@@ -39,7 +42,6 @@ class ProductProvider extends Component {
     productReviews: [],
     buyerOrders: [],
     orderDetails: [],
-    categories: [],
     reviews: [],
     hire: [],
     deliveredOrders: [],
@@ -64,7 +66,7 @@ class ProductProvider extends Component {
     currentScreen: 'products',
     isDrawerVisible: false,
     // isSeller: false,
-    isSeller: false,
+    isSeller: null,
     uid: "uHrYlhp39KS7Bsl5FYsSQzm9m8x2",
     isRDetailsPopUp: false,
     user:null,
@@ -81,6 +83,11 @@ componentWillUpdate(nextProps,nextState)
 
 }
   componentWillMount() {
+    setTimeout(() => {
+      fetch("https://jsonplaceholder.typicode.com/posts")
+        .then(response => response.json())
+        .then(json => this.setState({ done: true }));
+    }, 1200);
     localStorage.getItem('context-seller') &&this.setState({
       isSeller:JSON.parse(localStorage.getItem('context-seller'))
     })
@@ -295,7 +302,7 @@ toggleRider()
 }
 signIn(email,password)
 {
-  
+  this.toggleAppMode();
   // // console.log("sign in", email, password);
   fire.getFire().auth().signInWithEmailAndPassword(email, password).then(
     user => {
@@ -960,6 +967,12 @@ console.log("jqqqqq: "+displayname)
   };
   toggleAppMode = () => {
     // console.log('TOGGLER')
+    if(this.state.isSeller===null)
+    {
+      return {
+        isSeller: false
+      };
+    }
     this.setState(() => {
       return {
         isSeller: this.state.isSeller ? false : true,
@@ -1130,43 +1143,49 @@ for (var k in this.state.products)
 }
 }
   render() {
-    
-    return (
-      <ProductContext.Provider
-        value={{
-          ...this.state,
-          completeDelivery: this.completeDelivery,
-          getProduct: this.getProduct,
-          extractData: this.extractData,
-          submitComplain:this.submitComplain,
-          getProduct: this.getProduct,
-          pushProductOffer: this.pushProductOffer,
-          pushProductReview: this.pushProductReview,
-          signIn: this.signIn,
-          signUp: this.signUp,
-          storeInDatabase: this.storeInDatabase,
-          signOut: this.signOut,
-          handleRDetailClose: this.handleRDetailClose,
-          handleRDetailToggle: this.handleRDetailToggle,
-          searchProducts: this.searchProducts,
-          toggleAppMode: this.toggleAppMode,
-          handleDrawerClose: this.handleDrawerClose,
-          handleDrawerOpen: this.handleDrawerOpen,
-          switchScreen: this.switchScreen, // Register
-          handleDetail: this.handleDetail,
-          addToCart: this.addToCart,
-          openModal: this.openModal,
-          closeModal: this.closeModal,
-          increment: this.increment,
-          decrement: this.decrement,
-          removeItem: this.removeItem,
-          clearCart: this.clearCart,
-          checkoutCart: this.checkoutCart, 
-        }}
+    // !this.state.done ? (
+    //   return <ReactLoading type={"bars"} color={"white"} />
+    // ) : (
+     
+    // 
+    if(this.state.done){
+    return(<ProductContext.Provider
+      value={{
+        ...this.state,
+        completeDelivery: this.completeDelivery,
+        getProduct: this.getProduct,
+        extractData: this.extractData,
+        submitComplain:this.submitComplain,
+        getProduct: this.getProduct,
+        pushProductOffer: this.pushProductOffer,
+        pushProductReview: this.pushProductReview,
+        signIn: this.signIn,
+        signUp: this.signUp,
+        storeInDatabase: this.storeInDatabase,
+        signOut: this.signOut,
+        handleRDetailClose: this.handleRDetailClose,
+        handleRDetailToggle: this.handleRDetailToggle,
+        searchProducts: this.searchProducts,
+        toggleAppMode: this.toggleAppMode,
+        handleDrawerClose: this.handleDrawerClose,
+        handleDrawerOpen: this.handleDrawerOpen,
+        switchScreen: this.switchScreen, // Register
+        handleDetail: this.handleDetail,
+        addToCart: this.addToCart,
+        openModal: this.openModal,
+        closeModal: this.closeModal,
+        increment: this.increment,
+        decrement: this.decrement,
+        removeItem: this.removeItem,
+        clearCart: this.clearCart,
+        checkoutCart: this.checkoutCart, 
+      }}
       >
-        {this.props.children}
-      </ProductContext.Provider>
-    );
+      {this.props.children}
+      </ProductContext.Provider>);}
+      else
+     return <ReactLoading type={"bars"} color={"white"} />
+    
   }
 }
 const ProductConsumer = ProductContext.Consumer;
